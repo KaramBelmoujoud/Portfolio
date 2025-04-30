@@ -57,6 +57,7 @@ const projects = [
       text: "Visit Website",
       icon: ExternalLink,
     },
+    
   },
   {
     title: "AI Prediction Model | DSTI",

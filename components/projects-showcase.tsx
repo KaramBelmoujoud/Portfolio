@@ -8,7 +8,7 @@ import { useInView } from "react-intersection-observer"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Globe, Hand, Activity, Award, ExternalLink, Linkedin, Server, Github, X, Code, FolderGit2 } from "lucide-react"
+import { Globe, Hand, Activity, Award, ExternalLink, Linkedin, Server, Github, X, Code, FolderGit2,  } from "lucide-react"
 import { useLanguage } from "@/context/language-context"
 
 const ProjectsShowcase = () => {
@@ -43,8 +43,8 @@ const ProjectsShowcase = () => {
         },
         {
           url: "https://pypi.org/project/network-com/",
-          text: t("projects", "viewOnPyPI"),
-          icon: ExternalLink,
+          text: t("projects", "viewOnPypl"),
+          icon: Code,
         }
       ],
       color: "from-blue-500 to-cyan-400",
@@ -193,11 +193,11 @@ export default function TicketRegistration() {
       icon: Activity,
       tags: ["AI", "Machine Learning", "Python", "Healthcare", "Next.js"],
       category: "ai",
-      link: {
-        url: "https://github.com/DSTI-MLPR/WebPage",
+      links: [{
+        url: "https://github.com/DSTI-MLPR/ML-Project",
         text: t("projects", "viewOnGithub"),
-        icon: Github,
-      },
+        icon: Github,},]
+      ,
       color: "from-amber-500 to-orange-400",
       codeSnippet: `
 # Feature engineering and model training
@@ -239,11 +239,17 @@ print(classification_report(y_test, y_pred))
       icon: Hand,
       tags: ["Python", "Computer Vision", "AI", "Raspberry Pi"],
       category: "ai",
-      link: {
+      links: [{
         url: "https://www.linkedin.com/posts/oussama-boussaid_feecraexpo-gtech-done-activity-7064249973005017089-xGbS",
         text: t("projects", "viewLinkedInPost"),
         icon: Linkedin,
       },
+      {
+        url: "https://github.com/Ficraa/desktopappgtech",
+        text: t("projects", "viewOnGithub"),
+        icon: Github,
+      },
+    ],
       color: "from-blue-600 to-indigo-500",
       codeSnippet: `
 # Hand gesture recognition with MediaPipe
@@ -420,28 +426,23 @@ class GestureRecognizer:
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            transition={{ duration: 0.15 }}
             className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4"
             onClick={() => setSelectedProject(null)}
           >
             <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              transition={{ type: "spring", damping: 20 }}
-              className="bg-[#161b22] rounded-lg shadow-xl max-w-4xl w-full max-h-[80vh] overflow-y-auto border border-[#30363d]"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 10 }}
+              transition={{ 
+                duration: 0.2,
+                ease: [0.4, 0, 0.2, 1]
+              }}
+              className="bg-[#161b22] rounded-lg shadow-xl max-w-4xl w-full max-h-[80vh] overflow-y-auto border border-[#30363d] transform-gpu"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="p-6 relative">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="absolute right-4 top-4 text-slate-400 hover:text-slate-300 hover:bg-slate-700/20"
-                  onClick={() => setSelectedProject(null)}
-                >
-                  <X className="h-5 w-5" />
-                </Button>
-
-                <div className="mb-6">
+                <div className="flex justify-between items-center mb-6">
                   <div className="flex items-start gap-4">
                     <div className={`bg-gradient-to-r ${projects[selectedProject]?.color} p-3 rounded-full`}>
                       {projects[selectedProject]?.icon &&
@@ -452,10 +453,33 @@ class GestureRecognizer:
                       <p className="text-slate-300">{projects[selectedProject].description}</p>
                     </div>
                   </div>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="text-slate-400 hover:text-slate-300 hover:bg-slate-700/20"
+                    onClick={() => setSelectedProject(null)}
+                  >
+                    <X className="h-5 w-5" />
+                  </Button>
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-6">
                   <div>
+                    {projects[selectedProject].links && projects[selectedProject].links.length > 0 && (
+                      <div className="flex gap-2 mb-6">
+                        {projects[selectedProject].links.map((link, linkIndex) => (
+                          <Button
+                            key={linkIndex}
+                            className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                            onClick={() => window.open(link.url, "_blank")}
+                          >
+                            {React.createElement(link.icon, { className: "mr-2 h-4 w-4" })}
+                            {link.text}
+                          </Button>
+                        ))}
+                      </div>
+                    )}
+
                     <h4 className="font-semibold text-lg mb-3 text-slate-200 border-b border-[#30363d] pb-2">
                       Project Details
                     </h4>
@@ -501,21 +525,6 @@ class GestureRecognizer:
                     </div>
                   </div>
                 </div>
-
-                {projects[selectedProject].links && projects[selectedProject].links.length > 0 && (
-                  <div className="flex gap-2">
-                    {projects[selectedProject].links.map((link, linkIndex) => (
-                      <Button
-                        key={linkIndex}
-                        className="bg-emerald-600 hover:bg-emerald-700 text-white"
-                        onClick={() => window.open(link.url, "_blank")}
-                      >
-                        {React.createElement(link.icon, { className: "mr-2 h-4 w-4" })}
-                        {link.text}
-                      </Button>
-                    ))}
-                  </div>
-                )}
               </div>
             </motion.div>
           </motion.div>
