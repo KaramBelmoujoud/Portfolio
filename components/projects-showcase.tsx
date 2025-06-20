@@ -78,39 +78,78 @@ if __name__ == "__main__":
         "Collaborated with an exceptional team to reshape diabetes management through groundbreaking innovation.",
       ],
       icon: Award,
-      tags: ["AI", "Healthcare", "Hackathon", "Innovation"],
+      tags: ["AI", "Healthcare", "Hackathon", "Innovation", "Mobile App", "Flutter"],
       category: "ai",
       links: [
         {
           url: "https://www.linkedin.com/posts/universiapolisuniversiteinternationaledagadir_apr%C3%A8s-des-jours-intenses-de-collaboration-ugcPost-7147995035051974656-Ol7d",
           text: t("projects", "viewLinkedInPost"),
           icon: Linkedin,
+        },
+        {
+          url: "https://github.com/Pancrease/D-one",
+          text: t("projects", "viewOnGithub"),
+          icon: Github,
         }
       ],
       color: "from-purple-500 to-pink-500",
       codeSnippet: `
-# Glucose prediction model
-import tensorflow as tf
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import LSTM, Dense, Dropout
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_application_1/screens/loginpage.dart';
+import 'package:flutter_application_1/screens/Onboarding.dart';
+import 'package:flutter_application_1/screens/add_menu.dart';
+import 'package:flutter_application_1/screens/location.dart';
+import 'package:flutter_application_1/screens/menu.dart';
+import 'package:flutter_application_1/screens/phone.dart';
+import 'package:flutter_application_1/screens/succes.dart';
+import 'package:flutter_application_1/screens/verify.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-def create_prediction_model(input_shape):
-    model = Sequential([
-        LSTM(64, return_sequences=True, input_shape=input_shape),
-        Dropout(0.2),
-        LSTM(32),
-        Dropout(0.2),
-        Dense(16, activation='relu'),
-        Dense(1, activation='linear')
-    ])
-    
-    model.compile(
-        optimizer='adam',
-        loss='mse',
-        metrics=['mae']
-    )
-    
-    return model
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+      // options: DefaultFirebaseOptions.currentPlatform,
+      );
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  bool? seen = prefs.getBool('seen');
+  Widget screen;
+  if (seen == null || seen == false) {
+    screen = const Onboarding();
+  } else {
+    screen = const LoginPage();
+  }
+
+  runApp(MyApp(screen));
+}
+
+class MyApp extends StatelessWidget {
+  final Widget _screen;
+
+  const MyApp(this._screen, {super.key});
+
+  // This widget is the root of your application.
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+        routes: {
+          "menu": (context) => const Menu(),
+          "add": (context) => const Add(),
+          "login": (context) => const LoginPage(),
+          'phone': (context) => const MyPhone(),
+          'verify': (context) => const MyVerify(),
+          'location': (context) => const MyLocation(),
+          'succes': (context) => const MySucces(),
+        },
+        debugShowCheckedModeBanner: false,
+        title: 'D-one',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+
+        home: _screen);
+  }
+}
       `,
     },
     {
